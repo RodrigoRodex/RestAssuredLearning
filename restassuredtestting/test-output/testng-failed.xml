@@ -6,7 +6,9 @@
       <class name="restassuredtestting.HTTPRequests">
         <methods>
           <include name="updateUser"/>
+          <include name="deleteUser"/>
           <include name="createUser"/>
+          <include name="setup"/>
         </methods>
       </class> <!-- restassuredtestting.HTTPRequests -->
     </classes>

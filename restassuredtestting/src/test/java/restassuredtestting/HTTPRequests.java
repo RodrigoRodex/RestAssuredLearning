@@ -1,6 +1,9 @@
 package restassuredtestting;
 
+import org.apache.http.HttpStatus;
 import org.testng.annotations.*;
+
+import io.restassured.RestAssured;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.matcher.RestAssuredMatchers.*;
@@ -10,6 +13,12 @@ import java.util.HashMap;
 
 public class HTTPRequests {
 	
+	@BeforeClass
+	public static void setup() {
+		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+		baseURI = "https://api.restful-api.dev";
+	}
+	
 	String id; //usando string pq o site passa a id como string, não como int
 	
 	@Test (priority=1)
@@ -17,11 +26,10 @@ public class HTTPRequests {
 		//pegando um user qualquer e verificando se contem o id
 		given()
 			.when()
-				.get("https://api.restful-api.dev/objects")
+				.get("/objects")
 			.then()
-				.statusCode(200)
-				.body("id",hasItem("3"))
-				.log();
+				.statusCode(HttpStatus.SC_OK)
+				.body("id",hasItem("3"));
 	}
 	@Test(priority=2)
 	void createUser() {
@@ -33,12 +41,12 @@ public class HTTPRequests {
 			.body(data)
 			
 			.when()
-				.post("https://api.restful-api.dev/objects")
+				.post("/objects")
 				.jsonPath().getString("id")
 				;
 				
 			//.then()
-				//.statusCode(200)
+				//.statusCode(HttpStatus.SC_OK)
 				//.log().all();
 	}
 	
@@ -53,11 +61,10 @@ public class HTTPRequests {
 			.body(data)
 			
 			.when()
-				.put("https://api.restful-api.dev/objects/"+id)
+				.put("/objects/"+id)
 				
 			.then()
-			.statusCode(200)
-			.log().all();
+			.statusCode(HttpStatus.SC_OK);
 				
 	}
 	@Test (priority=4)
@@ -65,10 +72,9 @@ public class HTTPRequests {
 		given()
 		//apagando o user criado pelo id
 			.when()
-				.delete("https://api.restful-api.dev/objects/"+id)
+				.delete("/objects/"+id)
 			.then()
-				.statusCode(200)
-				.log().all()
+				.statusCode(HttpStatus.SC_OK);
 			;
 	}
 	
