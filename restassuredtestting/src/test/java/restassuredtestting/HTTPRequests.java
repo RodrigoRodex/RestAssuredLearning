@@ -3,6 +3,7 @@ package restassuredtestting;
 import org.apache.http.HttpStatus;
 import org.testng.annotations.*;
 
+import dominio.Usuário;
 import io.restassured.RestAssured;
 
 import static io.restassured.RestAssured.*;
@@ -33,32 +34,34 @@ public class HTTPRequests {
 	}
 	@Test(priority=2)
 	void createUser() {
+		Usuário usuario = new Usuário("android");
 		//criando um user de forma bruta com o HashMap e pegando a id como uma variável
-		HashMap data=new HashMap();
-		data.put("name", "android");
+		//HashMap data=new HashMap();
+		//data.put("name", "android");
 		id=given()
 			.contentType("application/json")
-			.body(data)
+			.body(usuario)
 			
 			.when()
 				.post("/objects")
-				.jsonPath().getString("id")
-				;
+				//.jsonPath().getString("id")
 				
-			//.then()
-				//.statusCode(HttpStatus.SC_OK)
-				//.log().all();
+			.then()
+				.statusCode(HttpStatus.SC_OK)
+				.body("name", is("android"))
+				.log().all()
+				.extract()
+				.path("id");
 	}
 	
 	@Test(priority=3,dependsOnMethods= {"createUser"})
 	void updateUser() {
 		//usando o id do user criado anteriormente para verificar o user
-		HashMap data=new HashMap();
-		data.put("name", "androids");
+		Usuário usuario = new Usuário("android");
 
 		given()
 			.contentType("application/json")
-			.body(data)
+			.body(usuario)
 			
 			.when()
 				.put("/objects/"+id)
